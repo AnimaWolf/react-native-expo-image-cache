@@ -8,10 +8,10 @@ const BASE_DIR = `${FileSystem.cacheDirectory}expo-image-cache/`;
 export class CacheEntry {
 
     uri: string;
-    options: {};
+    options: FileSystem.DownloadOptions;
     path: string;
 
-    constructor(uri: string, options: {}) {
+    constructor(uri: string, options: FileSystem.DownloadOptions) {
         this.uri = uri;
         this.options = options;
     }
@@ -33,7 +33,7 @@ export default class CacheManager {
 
     static entries: { [uri: string]: CacheEntry } = {};
 
-    static get(uri: string, options: {}): CacheEntry {
+    static get({ uri, ...options }: { uri: string, ...options: FileSystem.DownloadOptions }): CacheEntry {
         if (!CacheManager.entries[uri]) {
             CacheManager.entries[uri] = new CacheEntry(uri, options);
         }

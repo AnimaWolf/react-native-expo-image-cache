@@ -2,7 +2,7 @@
 import * as _ from "lodash";
 import * as React from "react";
 import {Image as RNImage, Animated, StyleSheet, View, Platform} from "react-native";
-import {BlurView} from "expo";
+import {BlurView,FileSystem} from "expo";
 import {type ImageStyle} from "react-native/Libraries/StyleSheet/StyleSheetTypes";
 import type {ImageSourcePropType} from "react-native/Libraries/Image/ImageSourcePropType";
 
@@ -12,8 +12,10 @@ type ImageProps = {
     style?: ImageStyle,
     defaultSource?: ImageSourcePropType,
     preview?: ImageSourcePropType,
-    options?: {},
-    uri: string,
+    source: {
+        uri: string,
+        ...options: FileSystem.DownloadOptions,
+    },
     transitionDuration?: number,
     tint?: "dark" | "light"
 };
@@ -37,9 +39,9 @@ export default class Image extends React.Component<ImageProps, ImageState> {
         intensity: new Animated.Value(100)
     };
 
-    async load({uri, options = {}}: ImageProps): Promise<void> {
+    async load({ source }: ImageProps): Promise<void> {
         if (uri) {
-            const path = await CacheManager.get(uri, options).getPath();
+            const path = await CacheManager.get(source).getPath();
             if (this.mounted) {
                 this.setState({ uri: path });
             }
